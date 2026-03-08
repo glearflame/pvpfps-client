@@ -27,11 +27,20 @@ public class PerformanceProfileModule extends Module {
 
     @Override
     public void onEnable() {
-        applyPreset(MinecraftClient.getInstance(), preset.get());
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client == null || client.options == null) {
+            return;
+        }
+
+        applyPreset(client, preset.get());
     }
 
     @Override
     public void onTick(MinecraftClient client) {
+        if (client == null || client.options == null) {
+            return;
+        }
+
         if (preset.get() != lastApplied) {
             applyPreset(client, preset.get());
         }
@@ -40,12 +49,18 @@ public class PerformanceProfileModule extends Module {
     @Override
     public void onDisable() {
         MinecraftClient client = MinecraftClient.getInstance();
-        previousValues.forEach((getter, value) -> OptionUtils.setOptionValue(client.options, getter, value));
+        if (client != null && client.options != null) {
+            previousValues.forEach((getter, value) -> OptionUtils.setOptionValue(client.options, getter, value));
+        }
         previousValues.clear();
         lastApplied = null;
     }
 
     private void applyPreset(MinecraftClient client, Preset selectedPreset) {
+        if (client == null || client.options == null) {
+            return;
+        }
+
         switch (selectedPreset) {
             case MAX_FPS -> {
                 setInt(client, "getBiomeBlendRadius", 0);
@@ -77,6 +92,10 @@ public class PerformanceProfileModule extends Module {
     }
 
     private void rememberOption(MinecraftClient client, String getterName) {
+        if (client == null || client.options == null) {
+            return;
+        }
+
         previousValues.computeIfAbsent(getterName, ignored -> OptionUtils.getOptionValue(client.options, getterName));
     }
 

@@ -9,6 +9,10 @@ public final class OptionUtils {
     }
 
     public static Object getOptionObject(GameOptions options, String getterName) {
+        if (options == null) {
+            return null;
+        }
+
         try {
             Method getter = options.getClass().getMethod(getterName);
             return getter.invoke(options);
