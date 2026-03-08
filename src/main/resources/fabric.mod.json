@@ -11,7 +11,7 @@
 		"homepage": "https://github.com/glear/pvpfps-client",
 		"sources": "https://github.com/glear/pvpfps-client"
 	},
-	"license": "MIT",
+	"license": "All Rights Reserved",
 	"icon": "assets/pvpfpsclient/icon.png",
 	"environment": "client",
 	"entrypoints": {
