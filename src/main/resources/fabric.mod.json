@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "pvpfpsclient",
+	"version": "${version}",
+	"name": "PVP FPS Client",
+	"description": "Cliente Fabric focado em FPS alto e recursos PvP com arquitetura modular.",
+	"authors": [
+		"glear"
+	],
+	"contact": {
+		"homepage": "https://github.com/glear/pvpfps-client",
+		"sources": "https://github.com/glear/pvpfps-client"
+	},
+	"license": "MIT",
+	"icon": "assets/pvpfpsclient/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.pvpfps.client.PvpFpsClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.8",
+		"java": ">=17",
+		"fabric-api": ">=0.136.1+1.21.8"
+	}
+}
