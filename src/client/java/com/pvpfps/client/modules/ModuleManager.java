@@ -1,5 +1,7 @@
 package com.pvpfps.client.modules;
 
+import com.pvpfps.client.modules.combat.AutoClickerModule;
+import com.pvpfps.client.modules.combat.AutoTotemModule;
 import com.pvpfps.client.modules.combat.CustomCrosshairModule;
 import com.pvpfps.client.modules.combat.DamageIndicatorModule;
 import com.pvpfps.client.modules.combat.HitColorModule;
@@ -13,6 +15,7 @@ import com.pvpfps.client.modules.hud.KeystrokesModule;
 import com.pvpfps.client.modules.hud.PingDisplayModule;
 import com.pvpfps.client.modules.hud.PotionEffectsHudModule;
 import com.pvpfps.client.modules.misc.ProfileHotkeysModule;
+import com.pvpfps.client.modules.misc.ScaffoldModule;
 import com.pvpfps.client.modules.performance.PerformanceProfileModule;
 import com.pvpfps.client.modules.render.BlockOverlayModule;
 import com.pvpfps.client.modules.render.ClearWaterModule;
@@ -50,6 +53,8 @@ public class ModuleManager {
     private void registerDefaults() {
         register(new ToggleSprintModule());
         register(new ToggleSneakModule());
+        register(new AutoClickerModule());
+        register(new AutoTotemModule());
         register(new CustomCrosshairModule());
         register(new HitColorModule());
         register(new DamageIndicatorModule());
@@ -70,6 +75,7 @@ public class ModuleManager {
 
         register(new PerformanceProfileModule());
         register(new ProfileHotkeysModule());
+        register(new ScaffoldModule());
     }
 
     public void register(Module module) {
@@ -102,7 +108,12 @@ public class ModuleManager {
     public void onTick(MinecraftClient client) {
         for (Module module : modules) {
             if (module.isEnabled()) {
-                module.onTick(client);
+                try {
+                    module.onTick(client);
+                } catch (Throwable t) {
+                    System.err.println("[PvPFPSClient] Exceção no onTick do módulo '" + module.getName() + "': " + t);
+                    t.printStackTrace();
+                }
             }
         }
     }
@@ -110,7 +121,12 @@ public class ModuleManager {
     public void onHudRender(DrawContext context, MinecraftClient client) {
         for (Module module : modules) {
             if (module.isEnabled()) {
-                module.onHudRender(context, client);
+                try {
+                    module.onHudRender(context, client);
+                } catch (Throwable t) {
+                    System.err.println("[PvPFPSClient] Exceção no onHudRender do módulo '" + module.getName() + "': " + t);
+                    t.printStackTrace();
+                }
             }
         }
     }
@@ -125,7 +141,9 @@ public class ModuleManager {
 
             boolean currentlyPressed = InputUtil.isKeyPressed(windowHandle, keybind);
             if (currentlyPressed && !pressedKeys.contains(keybind)) {
-                module.toggle();
+                if (client.currentScreen == null) {
+                    module.toggle();
+                }
                 pressedKeys.add(keybind);
             } else if (!currentlyPressed) {
                 pressedKeys.remove(keybind);

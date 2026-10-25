@@ -13,7 +13,8 @@ public class PerformanceProfileModule extends Module {
     public enum Preset {
         MAX_FPS,
         BALANCED,
-        QUALITY
+        QUALITY,
+        PVP
     }
 
     private final EnumSetting<Preset> preset = addSetting(new EnumSetting<>("preset", Preset.MAX_FPS, Preset.class));
@@ -64,7 +65,7 @@ public class PerformanceProfileModule extends Module {
         switch (selectedPreset) {
             case MAX_FPS -> {
                 setInt(client, "getBiomeBlendRadius", 0);
-                setInt(client, "getSimulationDistance", 6);
+                setInt(client, "getSimulationDistance", 4);
                 setEnum(client, "getParticles", "MINIMAL");
                 setEnum(client, "getCloudRenderMode", "OFF");
                 setEnum(client, "getGraphicsMode", "FAST");
@@ -85,6 +86,14 @@ public class PerformanceProfileModule extends Module {
                 setEnum(client, "getCloudRenderMode", "FANCY");
                 setEnum(client, "getGraphicsMode", "FANCY");
                 setBoolean(client, "getEntityShadows", true);
+            }
+            case PVP -> {
+                setInt(client, "getBiomeBlendRadius", 0);
+                setInt(client, "getSimulationDistance", 6);
+                setEnum(client, "getParticles", "MINIMAL");
+                setEnum(client, "getCloudRenderMode", "OFF");
+                setEnum(client, "getGraphicsMode", "FAST");
+                setBoolean(client, "getEntityShadows", false);
             }
         }
 

@@ -71,12 +71,14 @@ public class PvpFpsClient implements ClientModInitializer {
                 client.setScreen(new ClickGuiScreen());
             }
 
-            while (SAVE_PROFILE_KEY.wasPressed()) {
-                configManager.saveActiveProfile(moduleManager);
-            }
+            if (client.currentScreen == null) {
+                while (SAVE_PROFILE_KEY.wasPressed()) {
+                    configManager.saveActiveProfile(moduleManager);
+                }
 
-            while (LOAD_PROFILE_KEY.wasPressed()) {
-                configManager.loadActiveProfile(moduleManager);
+                while (LOAD_PROFILE_KEY.wasPressed()) {
+                    configManager.loadActiveProfile(moduleManager);
+                }
             }
         });
 
