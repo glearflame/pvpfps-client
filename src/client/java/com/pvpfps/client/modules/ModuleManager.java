@@ -14,6 +14,7 @@ import com.pvpfps.client.modules.hud.FpsCounterModule;
 import com.pvpfps.client.modules.hud.KeystrokesModule;
 import com.pvpfps.client.modules.hud.PingDisplayModule;
 import com.pvpfps.client.modules.hud.PotionEffectsHudModule;
+import com.pvpfps.client.modules.misc.AntiAFKModule;
 import com.pvpfps.client.modules.misc.ProfileHotkeysModule;
 import com.pvpfps.client.modules.misc.ScaffoldModule;
 import com.pvpfps.client.modules.performance.PerformanceProfileModule;
@@ -76,6 +77,7 @@ public class ModuleManager {
         register(new PerformanceProfileModule());
         register(new ProfileHotkeysModule());
         register(new ScaffoldModule());
+        register(new AntiAFKModule());
     }
 
     public void register(Module module) {

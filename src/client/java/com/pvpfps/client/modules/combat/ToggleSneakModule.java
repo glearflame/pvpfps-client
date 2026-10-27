@@ -5,8 +5,10 @@ import com.pvpfps.client.modules.Module;
 import net.minecraft.client.MinecraftClient;
 
 public class ToggleSneakModule extends Module {
+    private boolean isForcing;
+
     public ToggleSneakModule() {
-        super("ToggleSneak", "Mantem sneak ativo continuamente.", Category.COMBAT);
+        super("ToggleSneak", "Mantem sneak ativo enquanto se move.", Category.COMBAT);
     }
 
     @Override
@@ -15,12 +17,25 @@ public class ToggleSneakModule extends Module {
             return;
         }
 
-        client.options.sneakKey.setPressed(true);
+        double velX = client.player.getVelocity().x;
+        double velZ = client.player.getVelocity().z;
+        boolean moving = Math.abs(velX) > 0.01 || Math.abs(velZ) > 0.01;
+
+        if (moving && !isForcing) {
+            client.options.sneakKey.setPressed(true);
+            isForcing = true;
+        } else if (!moving && isForcing) {
+            client.options.sneakKey.setPressed(false);
+            isForcing = false;
+        }
     }
 
     @Override
     public void onDisable() {
         MinecraftClient client = MinecraftClient.getInstance();
-        client.options.sneakKey.setPressed(false);
+        if (client != null && client.options != null && isForcing) {
+            client.options.sneakKey.setPressed(false);
+            isForcing = false;
+        }
     }
 }
