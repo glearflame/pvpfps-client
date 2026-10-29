@@ -4,7 +4,9 @@ import com.pvpfps.client.PvpFpsClient;
 import com.pvpfps.client.modules.Category;
 import com.pvpfps.client.modules.Module;
 import com.pvpfps.client.modules.hud.HudModule;
+import com.pvpfps.client.settings.ColorSetting;
 import com.pvpfps.client.settings.IntSetting;
+import com.pvpfps.client.settings.Setting;
 import com.pvpfps.client.utils.DrawUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,6 +21,17 @@ public class ClickGuiScreen extends Screen {
     private static final int CATEGORY_WIDTH = 115;
 
     private Category selectedCategory = Category.COMBAT;
+
+    // Cores percorridas ao clicar no botao de cor de um ColorSetting.
+    private static final int[] COLOR_CYCLE = {
+            0xFFFF0000, // vermelho
+            0xFF00FF00, // verde
+            0xFF0000FF, // azul
+            0xFFFFFF00, // amarelo
+            0xFF00FFFF, // ciano
+            0xFFFF00FF, // magenta
+            0xFFFFFFFF, // branco
+    };
 
     public ClickGuiScreen() {
         super(Text.literal("PVP FPS Client"));
@@ -88,10 +101,28 @@ public class ClickGuiScreen extends Screen {
             context.drawTextWithShadow(textRenderer, module.getName(), x1 + 8, y1 + 6, 0xFFFFFFFF);
             context.drawTextWithShadow(textRenderer, module.isEnabled() ? "ON" : "OFF", x2 - 28, y1 + 6, module.isEnabled() ? 0xFF86EFAC : 0xFFFCA5A5);
 
+            ColorSetting colorSetting = getColorSetting(module);
+            if (colorSetting != null && !(module instanceof HudModule)) {
+                drawColorButton(context, x2 - 48, y1 + 3, colorSetting.get());
+            }
+
             if (module instanceof HudModule hudModule) {
                 renderHudPositionControls(context, hudModule, x2 - 62, y1 + 3);
             }
         }
+    }
+
+    private ColorSetting getColorSetting(Module module) {
+        for (Setting<?> setting : module.getSettings()) {
+            if (setting instanceof ColorSetting colorSetting) {
+                return colorSetting;
+            }
+        }
+        return null;
+    }
+
+    private void drawColorButton(DrawContext context, int x, int y, int color) {
+        DrawUtils.drawPanel(context, x, y, x + 15, y + 14, color, 0xFF000000);
     }
 
     private void renderHudPositionControls(DrawContext context, HudModule module, int firstButtonX, int y) {
@@ -171,6 +202,15 @@ public class ClickGuiScreen extends Screen {
                 }
             }
 
+            ColorSetting colorSetting = getColorSetting(module);
+            if (colorSetting != null && !(module instanceof HudModule)) {
+                int buttonX = x2 - 48;
+                if (isInside(mouseX, mouseY, buttonX, y1 + 3, buttonX + 15, y1 + 17)) {
+                    cycleColor(colorSetting);
+                    return true;
+                }
+            }
+
             if (button == 0) {
                 module.toggle();
                 return true;
@@ -209,6 +249,20 @@ public class ClickGuiScreen extends Screen {
 
     private boolean isInside(double mouseX, double mouseY, int x1, int y1, int x2, int y2) {
         return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
+    }
+
+    private void cycleColor(ColorSetting setting) {
+        int current = setting.get();
+        int next = COLOR_CYCLE[0];
+        boolean found = false;
+        for (int i = 0; i < COLOR_CYCLE.length; i++) {
+            if (COLOR_CYCLE[i] == current) {
+                next = COLOR_CYCLE[(i + 1) % COLOR_CYCLE.length];
+                found = true;
+                break;
+            }
+        }
+        setting.set(found ? next : COLOR_CYCLE[0]);
     }
 
     @Override

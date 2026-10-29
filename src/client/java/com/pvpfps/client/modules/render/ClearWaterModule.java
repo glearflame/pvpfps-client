@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 
 public class ClearWaterModule extends Module {
     private final BooleanSetting disableClouds = addSetting(new BooleanSetting("disableClouds", true));
+    private final BooleanSetting disableFog = addSetting(new BooleanSetting("disableFog", false));
     private Object previousBiomeBlend;
     private Object previousCloudMode;
 
@@ -25,6 +26,10 @@ public class ClearWaterModule extends Module {
             previousCloudMode = OptionUtils.getOptionValue(client.options, "getCloudRenderMode");
             OptionUtils.setEnumByName(client.options, "getCloudRenderMode", "OFF");
         }
+
+        if (disableFog.get()) {
+            disableWaterFog(client);
+        }
     }
 
     @Override
@@ -39,6 +44,29 @@ public class ClearWaterModule extends Module {
         if (previousCloudMode != null) {
             OptionUtils.setOptionValue(client.options, "getCloudRenderMode", previousCloudMode);
             previousCloudMode = null;
+        }
+    }
+
+    /**
+     * Tenta desativar a nevoa da agua. O Minecraft nao expõe essa opcao
+     * publicamente no GameOptions, entao tentamos por reflexao:
+     * client.options ("getWaterFog"). Se o metodo nao existir nesta versao,
+     * apenas registra um aviso e segue sem alterar a nevoa (sem mixin, sem
+     * quebrar o build).
+     */
+    private void disableWaterFog(MinecraftClient client) {
+        if (client == null || client.options == null) {
+            return;
+        }
+
+        // Tentativa: opcao getWaterFog em GameOptions (pode nao existir).
+        try {
+            Object option = OptionUtils.getOptionObject(client.options, "getWaterFog");
+            if (option != null) {
+                OptionUtils.setOptionValue(client.options, "getWaterFog", false);
+            }
+        } catch (Exception ignored) {
+            // Nao ha suporte para desativar nevoa da agua nesta versao sem mixin.
         }
     }
 }

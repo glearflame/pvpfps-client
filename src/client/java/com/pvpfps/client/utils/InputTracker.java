@@ -22,12 +22,16 @@ public final class InputTracker {
     private static long lastDamageTime;
     private static long lastHitTime;
 
+    private static int maxLeftCps = 0;
+    private static int maxRightCps = 0;
+
     private InputTracker() {
     }
 
     public static void tick(MinecraftClient client) {
         long now = System.currentTimeMillis();
         prune(now);
+        updateMaxCps();
 
         if (client.player == null || client.world == null) {
             attackPressedLastTick = false;
@@ -101,8 +105,27 @@ public final class InputTracker {
         return RIGHT_CLICKS.size();
     }
 
+    private static void updateMaxCps() {
+        int left = getLeftCps();
+        int right = getRightCps();
+        if (left > maxLeftCps) {
+            maxLeftCps = left;
+        }
+        if (right > maxRightCps) {
+            maxRightCps = right;
+        }
+    }
+
     public static int getTotalCps() {
         return getLeftCps() + getRightCps();
+    }
+
+    public static int getMaxLeftCps() {
+        return maxLeftCps;
+    }
+
+    public static int getMaxRightCps() {
+        return maxRightCps;
     }
 
     public static float getLastDamage() {

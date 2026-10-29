@@ -29,8 +29,12 @@ public class ArmorHudModule extends HudModule {
             context.drawItem(stack, x + offset, y);
             if (!stack.isEmpty() && stack.getMaxDamage() > 0) {
                 int remaining = stack.getMaxDamage() - stack.getDamage();
+                int max = stack.getMaxDamage();
+                int percent = max > 0 ? (int) ((remaining * 100.0) / max) : 0;
+                // Cor da durabilidade por porcentagem: verde > 75%, amarelo 35-75%, vermelho < 35%.
+                int color = percent > 75 ? 0xFF00FF00 : percent >= 35 ? 0xFFFFFF00 : 0xFFFF0000;
                 String text = String.valueOf(remaining);
-                context.drawTextWithShadow(client.textRenderer, text, x + offset, y + 18, 0xFFFFFFFF);
+                context.drawTextWithShadow(client.textRenderer, text, x + offset, y + 18, color);
             }
             offset += 18;
         }
