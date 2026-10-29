@@ -4,7 +4,12 @@ import com.pvpfps.client.modules.combat.AutoClickerModule;
 import com.pvpfps.client.modules.combat.AutoTotemModule;
 import com.pvpfps.client.modules.combat.CustomCrosshairModule;
 import com.pvpfps.client.modules.combat.DamageIndicatorModule;
+import com.pvpfps.client.modules.combat.FastBreakModule;
+import com.pvpfps.client.modules.combat.FastBridgeModule;
+import com.pvpfps.client.modules.combat.FastPlaceModule;
 import com.pvpfps.client.modules.combat.HitColorModule;
+import com.pvpfps.client.modules.combat.NoSwingModule;
+import com.pvpfps.client.modules.combat.ReachModule;
 import com.pvpfps.client.modules.combat.ToggleSneakModule;
 import com.pvpfps.client.modules.combat.ToggleSprintModule;
 import com.pvpfps.client.modules.combat.ZoomModule;
@@ -77,6 +82,11 @@ public class ModuleManager {
         register(new PerformanceProfileModule());
         register(new ProfileHotkeysModule());
         register(new ScaffoldModule());
+        register(new FastPlaceModule());
+        register(new FastBreakModule());
+        register(new FastBridgeModule());
+        register(new NoSwingModule());
+        register(new ReachModule());
         register(new AntiAFKModule());
     }
 
